@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Healthcare Analytics for Doctor Visits</title>
+<style>
+:root{
+  --bg:#f4f7fb; --panel:#ffffff; --ink:#172033; --muted:#687386;
+  --line:#e5eaf2; --primary:#2f6f9f; --primary2:#5b8fb3;
+  --accent:#e8892e; --green:#2d8a68; --shadow:0 8px 24px rgba(31,50,81,.07);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.app{display:flex;min-height:100vh}
+.sidebar{width:245px;background:#14263a;color:#fff;padding:28px 18px;position:sticky;top:0;height:100vh}
+.brand{font-size:20px;font-weight:800;line-height:1.25;margin:0 10px 6px}
+.brand-sub{font-size:12px;color:#b7c5d6;margin:0 10px 28px}
+.nav button{width:100%;border:0;background:transparent;color:#c7d3df;text-align:left;padding:12px 13px;border-radius:9px;margin:3px 0;cursor:pointer;font-size:14px}
+.nav button:hover,.nav button.active{background:#24415c;color:#fff}
+.sidebar-note{position:absolute;bottom:22px;left:18px;right:18px;color:#9fb0c2;font-size:11px;line-height:1.45}
+main{flex:1;padding:28px 34px 42px;max-width:1500px;margin:auto;width:100%}
+.header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:22px}
+h1{margin:0;font-size:30px;letter-spacing:-.5px}
+.subtitle{color:var(--muted);margin:7px 0 0;font-size:14px}
+.badge{background:#e8f1f8;color:#24577d;border-radius:20px;padding:8px 12px;font-size:12px;font-weight:700;white-space:nowrap}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:20px}
+.kpi{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:14px;padding:17px}
+.kpi .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;font-weight:700}
+.kpi .value{font-size:28px;font-weight:800;margin:7px 0 2px}
+.kpi .desc{font-size:11px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-bottom:16px}
+.card{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:14px;padding:18px}
+.span-4{grid-column:span 4}.span-5{grid-column:span 5}.span-6{grid-column:span 6}.span-7{grid-column:span 7}.span-8{grid-column:span 8}.span-12{grid-column:span 12}
+.card h2{font-size:15px;margin:0 0 4px}
+.card p.caption{font-size:11px;color:var(--muted);margin:0 0 14px}
+.chart{width:100%;height:260px;display:block}
+.chart.tall{height:300px}
+.legend{display:flex;gap:18px;font-size:11px;color:var(--muted);margin:4px 0 10px}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:700}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+.insights{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.insight{border:1px solid var(--line);border-radius:11px;padding:14px;background:#fbfcfe}
+.insight b{display:block;font-size:13px;margin-bottom:5px}
+.insight span{font-size:12px;line-height:1.45;color:var(--muted)}
+.section{display:none}.section.active{display:block}
+.footer{color:#8792a3;font-size:11px;margin-top:14px}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.span-4,.span-5,.span-6,.span-7,.span-8{grid-column:span 6}}
+@media(max-width:760px){.sidebar{display:none}main{padding:20px}.kpis{grid-template-columns:repeat(2,1fr)}.span-4,.span-5,.span-6,.span-7,.span-8,.span-12{grid-column:span 12}.insights{grid-template-columns:1fr}.header{display:block}.badge{display:inline-block;margin-top:12px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand">Healthcare Analytics</div>
+  <div class="brand-sub">Doctor Visit Analysis</div>
+  <nav class="nav">
+    <button class="active" data-section="overview">Overview</button>
+    <button data-section="utilization">Visit Utilization</button>
+    <button data-section="factors">Patient Factors</button>
+  </nav>
+  <div class="sidebar-note">Python-based exploratory analytics<br>Source: supplied project summaries</div>
+</aside>
+
+<main>
+  <header class="header">
+    <div>
+      <h1>Healthcare Analytics for Doctor Visits</h1>
+      <p class="subtitle">A concise dashboard of healthcare coverage, chronic conditions, illness level, demographics and doctor-visit frequency.</p>
+    </div>
+    <div class="badge">Pandas · NumPy · Matplotlib · Seaborn</div>
+  </header>
+
+  <section id="overview" class="section active">
+    <div class="kpis">
+      <div class="kpi"><div class="label">Total Patients</div><div class="value">5,190</div><div class="desc">Patients in analysis</div></div>
+      <div class="kpi"><div class="label">Total Visits</div><div class="value">1,566</div><div class="desc">Recorded doctor visits</div></div>
+      <div class="kpi"><div class="label">Avg Doctor Visits</div><div class="value">0.30</div><div class="desc">Visits per patient</div></div>
+      <div class="kpi"><div class="label">Avg Illness</div><div class="value">1.43</div><div class="desc">Illness score</div></div>
+      <div class="kpi"><div class="label">Avg Health Score</div><div class="value">1.22</div><div class="desc">Health-status score</div></div>
+      <div class="kpi"><div class="label">Avg Reduced Activity</div><div class="value">0.86</div><div class="desc">Reduced-activity score</div></div>
+    </div>
+
+    <div class="grid">
+      <div class="card span-7">
+        <h2>Average Doctor Visits by Age Group</h2><p class="caption">Average visits rise across the adult age groups shown in the supplied analysis.</p>
+        <svg class="chart" viewBox="0 0 720 280" preserveAspectRatio="none">
+          <line x1="55" y1="235" x2="700" y2="235" stroke="#cfd7e3"/>
+          <line x1="55" y1="30" x2="55" y2="235" stroke="#cfd7e3"/>
+          <g font-size="11" fill="#687386"><text x="20" y="239">0</text><text x="12" y="188">0.1</text><text x="12" y="137">0.2</text><text x="12" y="86">0.3</text><text x="12" y="35">0.4</text></g>
+          <g fill="#2f6f9f">
+            <rect x="85" y="235" width="92" height="0"/><rect x="210" y="124" width="92" height="111"/><rect x="335" y="102" width="92" height="133"/><rect x="460" y="45" width="92" height="190"/><rect x="585" y="14" width="92" height="221"/>
+          </g>
+          <g font-size="11" fill="#687386" text-anchor="middle"><text x="131" y="255">0–18</text><text x="256" y="255">19–30</text><text x="381" y="255">31–45</text><text x="506" y="255">46–60</text><text x="631" y="255">61+</text></g>
+          <g font-size="11" fill="#172033" text-anchor="middle" font-weight="700"><text x="256" y="116">0.217</text><text x="381" y="94">0.260</text><text x="506" y="37">0.370</text><text x="631" y="7">0.432</text></g>
+        </svg>
+      </div>
+
+      <div class="card span-5">
+        <h2>Doctor Visit Frequency</h2><p class="caption">Most patients recorded no doctor visits during the measured period.</p>
+        <svg class="chart" viewBox="0 0 520 280" preserveAspectRatio="none">
+          <line x1="45" y1="235" x2="500" y2="235" stroke="#cfd7e3"/><line x1="45" y1="25" x2="45" y2="235" stroke="#cfd7e3"/>
+          <g fill="#5b8fb3">
+            <rect x="62" y="26" width="35" height="209"/><rect x="112" y="196" width="35" height="39"/><rect x="162" y="226" width="35" height="9"/><rect x="212" y="233" width="35" height="2"/><rect x="262" y="233" width="35" height="2"/><rect x="312" y="234" width="35" height="1"/><rect x="362" y="234" width="35" height="1"/><rect x="412" y="234" width="35" height="1"/><rect x="462" y="234" width="30" height="1"/>
+          </g>
+          <g font-size="10" fill="#687386" text-anchor="middle"><text x="79" y="253">0</text><text x="129" y="253">1</text><text x="179" y="253">2</text><text x="229" y="253">3</text><text x="279" y="253">4</text><text x="329" y="253">5</text><text x="379" y="253">6</text><text x="429" y="253">7</text><text x="477" y="253">8+</text></g>
+        </svg>
+      </div>
+
+      <div class="card span-6">
+        <h2>Chronic vs Non-Chronic</h2><p class="caption">Average doctor visits are higher for patients with chronic conditions.</p>
+        <svg class="chart" viewBox="0 0 600 250" preserveAspectRatio="none">
+          <line x1="70" y1="210" x2="560" y2="210" stroke="#cfd7e3"/>
+          <rect x="140" y="113" width="110" height="97" fill="#2f6f9f"/><rect x="350" y="5" width="110" height="205" fill="#e8892e"/>
+          <g font-size="12" fill="#687386" text-anchor="middle"><text x="195" y="232">No chronic</text><text x="405" y="232">Chronic</text></g>
+          <g font-size="12" fill="#172033" text-anchor="middle" font-weight="700"><text x="195" y="104">0.19</text><text x="405" y="0">0.41</text></g>
+        </svg>
+      </div>
+
+      <div class="card span-6">
+        <h2>Healthcare Coverage</h2><p class="caption">Average visits by selected coverage indicators.</p>
+        <table>
+          <thead><tr><th>Coverage</th><th class="num">No</th><th class="num">Yes</th></tr></thead>
+          <tbody>
+            <tr><td>Private coverage</td><td class="num">0.31</td><td class="num">0.29</td></tr>
+            <tr><td>Free/Poor coverage</td><td class="num">0.31</td><td class="num">0.16</td></tr>
+            <tr><td>Free repatriation</td><td class="num">0.26</td><td class="num">0.47</td></tr>
+            <tr><td>Any healthcare coverage</td><td class="num">0.22</td><td class="num">0.34</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card span-12">
+        <h2>Key Findings</h2><p class="caption">Descriptive observations from the supplied aggregate results.</p>
+        <div class="insights">
+          <div class="insight"><b>Age and utilization</b><span>Average visits increase from 0.217 for ages 19–30 to 0.432 for ages 61+, based on the displayed age-group aggregates.</span></div>
+          <div class="insight"><b>Chronic conditions</b><span>The chronic-condition group shows a higher average visit rate than the non-chronic group in the supplied analysis.</span></div>
+          <div class="insight"><b>Visit concentration</b><span>4,141 of 5,190 patients are shown with zero doctor visits, while 782 have one visit.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="utilization" class="section">
+    <div class="grid">
+      <div class="card span-7">
+        <h2>Illness Level vs Average Doctor Visits</h2><p class="caption">Displayed averages by illness level.</p>
+        <table><thead><tr><th>Illness</th><th class="num">Patients</th><th class="num">Avg visits</th></tr></thead><tbody>
+        <tr><td>0</td><td class="num">3,026</td><td class="num">0.199</td></tr><tr><td>1</td><td class="num">823</td><td class="num">0.335</td></tr><tr><td>2</td><td class="num">446</td><td class="num">0.381</td></tr><tr><td>3</td><td class="num">273</td><td class="num">0.418</td></tr><tr><td>4</td><td class="num">187</td><td class="num">0.535</td></tr><tr><td>5</td><td class="num">132</td><td class="num">0.530</td></tr><tr><td>6</td><td class="num">104</td><td class="num">0.625</td></tr><tr><td>7</td><td class="num">61</td><td class="num">0.918</td></tr><tr><td>8</td><td class="num">42</td><td class="num">0.476</td></tr><tr><td>9</td><td class="num">32</td><td class="num">0.656</td></tr><tr><td>10</td><td class="num">21</td><td class="num">1.524</td></tr><tr><td>11</td><td class="num">24</td><td class="num">0.833</td></tr><tr><td>12</td><td class="num">19</td><td class="num">1.000</td></tr>
+        </tbody></table>
+      </div>
+      <div class="card span-5">
+        <h2>Visit Frequency Counts</h2><p class="caption">Patient counts shown in the source analysis.</p>
+        <table><thead><tr><th>Visits</th><th class="num">Patients</th></tr></thead><tbody>
+        <tr><td>0</td><td class="num">4,141</td></tr><tr><td>1</td><td class="num">782</td></tr><tr><td>2</td><td class="num">174</td></tr><tr><td>3</td><td class="num">30</td></tr><tr><td>4</td><td class="num">24</td></tr><tr><td>5</td><td class="num">9</td></tr><tr><td>6</td><td class="num">12</td></tr><tr><td>7</td><td class="num">12</td></tr><tr><td>8</td><td class="num">5</td></tr><tr><td>9</td><td class="num">1</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <section id="factors" class="section">
+    <div class="grid">
+      <div class="card span-6">
+        <h2>Gender Analysis</h2><p class="caption">Average visits and totals shown in the source summary.</p>
+        <table><thead><tr><th>Gender</th><th class="num">Patients</th><th class="num">Visits</th><th class="num">Avg visits</th></tr></thead><tbody>
+        <tr><td>Female</td><td class="num">2,702</td><td class="num">978</td><td class="num">0.362</td></tr>
+        <tr><td>Male</td><td class="num">2,488</td><td class="num">588</td><td class="num">0.236</td></tr>
+        </tbody></table>
+      </div>
+      <div class="card span-6">
+        <h2>Age Group Summary</h2><p class="caption">Patient counts, total visits and average visits.</p>
+        <table><thead><tr><th>Age group</th><th class="num">Patients</th><th class="num">Visits</th><th class="num">Avg</th></tr></thead><tbody>
+        <tr><td>0–18</td><td class="num">0</td><td class="num">0</td><td class="num">—</td></tr>
+        <tr><td>19–30</td><td class="num">2,488</td><td class="num">539</td><td class="num">0.217</td></tr>
+        <tr><td>31–45</td><td class="num">573</td><td class="num">149</td><td class="num">0.260</td></tr>
+        <tr><td>46–60</td><td class="num">676</td><td class="num">250</td><td class="num">0.370</td></tr>
+        <tr><td>61+</td><td class="num">1,453</td><td class="num">628</td><td class="num">0.432</td></tr>
+        </tbody></table>
+      </div>
+      <div class="card span-12">
+        <h2>Chronic Condition Distribution</h2><p class="caption">Patient counts from the supplied chronic-condition chart.</p>
+        <div class="insights">
+          <div class="insight"><b>Chronic: Yes</b><span>2,702 patients are shown in the chronic-condition group.</span></div>
+          <div class="insight"><b>Chronic: No</b><span>2,488 patients are shown in the non-chronic group.</span></div>
+          <div class="insight"><b>Long-term condition</b><span>The displayed average is approximately 0.60 visits with a long-term chronic condition versus 0.26 without.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">Dashboard values are transcribed from the supplied screenshots. They are descriptive aggregates and do not establish causation.</div>
+</main>
+</div>
+<script>
+document.querySelectorAll('.nav button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.section).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>
